@@ -4,14 +4,14 @@ pipeline {
         jdk 'java11'
         maven 'Maven3'
     }
-    environment {
+    /*environment {
 	    APP_NAME = "tomcat-app-pipeline"
             RELEASE = "1.0.0"
             DOCKER_USER = "rajf5"
             DOCKER_PASS = 'dockerhub'
             IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-    }
+    }*/
     stages{
         stage("Cleanup Workspace"){
                 steps {
@@ -38,7 +38,7 @@ pipeline {
            }
 	}
 	       
-        stage("SonarQube Analysis"){
+        /*stage("SonarQube Analysis"){
             steps {
 	           script {
 		        withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') { 
@@ -55,7 +55,6 @@ pipeline {
             }
 
         }
-
 	 stage('Build and Push Docker Image') {
        
              steps {
@@ -65,7 +64,7 @@ pipeline {
                     docker.withRegistry('https://index.docker.io/v1/', "dockerhub") {
                     dockerImage.push()
             }
-        }
+        }*/
       }
     }   
 
