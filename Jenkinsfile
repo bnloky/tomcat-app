@@ -60,15 +60,15 @@ pipeline {
            steps {
                script {
                 // Configure Docker
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                       docker.withRegistry('https://index.docker.io/v1/', 'DOCKER_CONFIG') {
+                    withCredentials([usernamePassword(credentialsId: 'dockerhub', variable: 'DOCKER_CONFIG')]) {
+                       docker.withRegistry('https://index.docker.io/v1/', "$DOCKER_CONFIG") {
                        docker_image = docker.build "${IMAGE_NAME}"
                 }
             }
 
             // Push Docker Image
-            withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'DOCKER_PASS', usernameVariable: 'DOCKER_USER')]) {
-                docker.withRegistry('https://index.docker.io/v1/', 'DOCKER_CONFIG') {
+            withCredentials([usernamePassword(credentialsId: 'dockerhub', variable: 'DOCKER_CONFIG')]) {
+                docker.withRegistry('https://index.docker.io/v1/', "$DOCKER_CONFIG") {
                     docker_image.push("${IMAGE_TAG}")
                     docker_image.push('latest')
                 }
