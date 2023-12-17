@@ -56,24 +56,23 @@ pipeline {
 
         }
 
-         stage('Build and Push Docker Image') {
+	 stage("Build & Push Docker Image") {
             steps {
                 script {
-                    // Build the Docker image
-                    def dockerImage = docker.build("${DOCKER_IMAGE}:${IMAGE_TAG}")
+                    docker.withRegistry('',DOCKER_PASS) {
+                        docker_image = docker.build "${IMAGE_NAME}"
+                    }
 
-                    // Authenticate with Docker Hub using Jenkins credentials
-                    withCredentials([usernamePassword(credentialsId: 'dockerhub', usernameVariable: 'DOCKER_USERNAME', passwordVariable: 'DOCKER_PASSWORD')]) {
-                        // Log in to Docker Hub
-                        sh "docker login -u ${DOCKER_USERNAME} -p ${DOCKER_PASSWORD}"
-
-                        // Push the Docker image to Docker Hub
-                        sh "docker push ${DOCKER_IMAGE}:${IMAGE_TAG}"
-                        sh "docker push ${DOCKER_IMAGE}:latest"
+                    docker.withRegistry('',DOCKER_PASS) {
+                        docker_image.push("${IMAGE_TAG}")
+                        docker_image.push('latest')
                     }
                 }
             }
-        }
+
+       }   
+
+          
     
 
    }   
