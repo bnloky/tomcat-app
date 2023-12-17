@@ -4,14 +4,14 @@ pipeline {
         jdk 'java11'
         maven 'Maven3'
     }
-    /*environment {
+    environment {
 	    APP_NAME = "tomcat-app-pipeline"
             RELEASE = "1.0.0"
             DOCKER_USER = "rajf5"
             DOCKER_PASS = 'dockerhub'
             IMAGE_NAME = "${DOCKER_USER}" + "/" + "${APP_NAME}"
             IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
-    }*/
+    }
     stages{
         stage("Cleanup Workspace"){
                 steps {
