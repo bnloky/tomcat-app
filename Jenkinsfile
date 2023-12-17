@@ -1,5 +1,5 @@
 pipeline {
-    agent { any }
+    agent any
     tools {
         jdk 'java11'
         maven 'Maven3'
