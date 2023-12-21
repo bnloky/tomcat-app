@@ -94,7 +94,6 @@ pipeline {
                     git config --global user.email "raj199.com@gmail.com"
                     git add deployment.yaml
                     git add server/target/ webapp/target/
-                    git commit -m "Add untracked files"
                     git commit -m "Updated Deployment Manifest"
                     
                 """
