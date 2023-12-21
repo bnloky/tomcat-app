@@ -71,9 +71,9 @@ pipeline {
             steps {
                 script {
                     // Navigate to the tomcat-app-cd directory
-                    dir('tomcat-app-cd') {
+                    dir("${WORKSPACE}/tomcat-app-cd") {
                         // Display the content of deployment.yaml before modification
-                        sh 'cat deployment.yaml'
+                        sh 'ls deployment.yaml'
                         
                         // Update the deployment.yaml file
                         sh "sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml"
@@ -89,7 +89,7 @@ pipeline {
             steps {
                 script {
                     // Navigate to the tomcat-app-cd directory
-                    dir('tomcat-app-cd') {
+                    dir("${WORKSPACE}/tomcat-app-cd") {
                         // Configure Git user information
                         sh 'git config --global user.name "Rojha-git"'
                         sh 'git config --global user.email "raj199.com@gmail.com"'
@@ -106,7 +106,6 @@ pipeline {
                 }
             }
         }
-
           
     
 
