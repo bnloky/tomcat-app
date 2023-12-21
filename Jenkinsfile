@@ -62,7 +62,7 @@ pipeline {
                     def dockerImage = docker.image("${IMAGE_NAME}")
                     docker.withRegistry('https://index.docker.io/v1/', "dockerhub") {
                     dockerImage.push("${IMAGE_TAG}")
-	            docker_image.push('latest')    
+	    
             }
         }
       }
