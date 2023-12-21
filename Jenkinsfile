@@ -69,7 +69,11 @@ pipeline {
             }
         }
         
-        
+        stage("clean workspace again"){
+            steps{ 
+                cleanWs()
+            }
+        }
         
         stage("Checkout from SCM (tomcat-app-cd)") {
             steps {
