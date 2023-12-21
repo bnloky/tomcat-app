@@ -67,42 +67,28 @@ pipeline {
         }
       }
     }
-	 stage("Update the Deployment Tags") {
+	  stage("Update the Deployment Tags") {
             steps {
-                script {
-                    // Navigate to the tomcat-app-cd directory
-                    dir("${WORKSPACE}/tomcat-app-cd") {
-                        // Display the content of deployment.yaml before modification
-                        sh 'ls deployment.yaml'
-                        
-                        // Update the deployment.yaml file
-                        sh "sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml"
-                        
-                        // Display the content of deployment.yaml after modification
-                        sh 'cat deployment.yaml'
-                    }
-                }
+		withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]){    
+                sh """
+                   cat https://github.com/Rojha-git/tomcat-app-cd/deployment.yaml
+                   sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
+                   cat https://github.com/Rojha-git/tomcat-app-cd/deployment.yaml
+                """
+		}	
             }
         }
 
         stage("Push the changed deployment file to Git") {
             steps {
-                script {
-                    // Navigate to the tomcat-app-cd directory
-                    dir("${WORKSPACE}/tomcat-app-cd") {
-                        // Configure Git user information
-                        sh 'git config --global user.name "Rojha-git"'
-                        sh 'git config --global user.email "raj199.com@gmail.com"'
-
-                        // Add and commit changes to deployment.yaml
-                        sh 'git add deployment.yaml'
-                        sh 'git commit -m "Updated Deployment Manifest"'
-
-                        // Push changes to the remote repository on GitHub
-                        withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
-                            sh 'git push https://Rojha-git:${GIT_PASSWORD}@github.com/Rojha-git/tomcat-app-cd main'
-                        }
-                    }
+                sh """
+                   git config --global user.name "Rojha-git"
+                   git config --global user.email "raj199.com@gmail.com"
+                   git add https://github.com/Rojha-git/tomcat-app-cd/deployment.yaml
+                   git commit -m "Updated Deployment Manifest"
+                """
+                withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
+                  sh "git push https://github.com/Rojha-git/tomcat-app-cd main"
                 }
             }
         }
