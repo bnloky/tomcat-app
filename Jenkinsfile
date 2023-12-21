@@ -67,15 +67,19 @@ pipeline {
         }
       }
     }
-	  stage("Update the Deployment Tags") {
+	  stage("Checkout from SCM") {
+               steps {
+                   git branch: 'main', credentialsId: 'github', url: 'https://github.com/Rojha-git/tomcat-app-cd'
+               }
+        }
+
+        stage("Update the Deployment Tags") {
             steps {
-		withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]){    
                 sh """
-                   cat https://github.com/Rojha-git/tomcat-app-cd/deployment.yaml
+                   cat deployment.yaml
                    sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
-                   cat https://github.com/Rojha-git/tomcat-app-cd/deployment.yaml
+                   cat deployment.yaml
                 """
-		}	
             }
         }
 
@@ -84,7 +88,7 @@ pipeline {
                 sh """
                    git config --global user.name "Rojha-git"
                    git config --global user.email "raj199.com@gmail.com"
-                   git add https://github.com/Rojha-git/tomcat-app-cd/deployment.yaml
+                   git add deployment.yaml
                    git commit -m "Updated Deployment Manifest"
                 """
                 withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
