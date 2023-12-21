@@ -68,28 +68,44 @@ pipeline {
       }
     }
 	 stage("Update the Deployment Tags") {
-             steps {
-                 sh """
-                    cat tomcat-app-cd/deployment.yaml
-                    sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' tomcat-app-cd/deployment.yaml
-                    cat tomcat-app-cd/deployment.yaml
-                 """
-             }
-         }
+            steps {
+                script {
+                    // Navigate to the tomcat-app-cd directory
+                    dir('tomcat-app-cd') {
+                        // Display the content of deployment.yaml before modification
+                        sh 'cat deployment.yaml'
+                        
+                        // Update the deployment.yaml file
+                        sh "sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml"
+                        
+                        // Display the content of deployment.yaml after modification
+                        sh 'cat deployment.yaml'
+                    }
+                }
+            }
+        }
 
-         stage("Push the changed deployment file to Git") {
-             steps {
-                 sh """
-                    git config --global user.name "Rojha-git"
-                    git config --global user.email "raj199.com@gmail.com"
-                    git add tomcat-app-cd/deployment.yaml
-                    git commit -m "Updated Deployment Manifest"
-                 """
-                  withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
-                    sh "https://github.com/Rojha-git/tomcat-app-cd main"
-                } 
-	     } 
-	 }
+        stage("Push the changed deployment file to Git") {
+            steps {
+                script {
+                    // Navigate to the tomcat-app-cd directory
+                    dir('tomcat-app-cd') {
+                        // Configure Git user information
+                        sh 'git config --global user.name "Rojha-git"'
+                        sh 'git config --global user.email "raj199.com@gmail.com"'
+
+                        // Add and commit changes to deployment.yaml
+                        sh 'git add deployment.yaml'
+                        sh 'git commit -m "Updated Deployment Manifest"'
+
+                        // Push changes to the remote repository on GitHub
+                        withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
+                            sh 'git push https://Rojha-git:${GIT_PASSWORD}@github.com/Rojha-git/tomcat-app-cd main'
+                        }
+                    }
+                }
+            }
+        }
 
           
     
