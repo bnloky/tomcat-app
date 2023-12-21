@@ -91,8 +91,9 @@ pipeline {
                 sh """
                     git config --global user.name "Rojha-git"
                     git config --global user.email "raj199.com@gmail.com"
+                    sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
                     git add deployment.yaml
-                    git commit -m "Updated Deployment Manifest"
+                    git commit -m "Updated Deployment Manifest1"
                     
                 """
                 withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
