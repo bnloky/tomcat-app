@@ -70,9 +70,9 @@ pipeline {
 	 stage("Update the Deployment Tags") {
              steps {
                  sh """
-                    cat deployment.yaml
-                    sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
-                    cat deployment.yaml
+                    cat tomcat-app-cd/deployment.yaml
+                    sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' tomcat-app-cd/deployment.yaml
+                    cat tomcat-app-cd/deployment.yaml
                  """
              }
          }
@@ -82,12 +82,11 @@ pipeline {
                  sh """
                     git config --global user.name "Rojha-git"
                     git config --global user.email "raj199.com@gmail.com"
-                    git add deployment.yaml
-		    git add service.yaml
+                    git add tomcat-app-cd/deployment.yaml
                     git commit -m "Updated Deployment Manifest"
                  """
                   withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
-                    sh "git push https://github.com/Rojha-git/tomcat-app main"
+                    sh "https://github.com/Rojha-git/tomcat-app-cd main"
                 } 
 	     } 
 	 }
