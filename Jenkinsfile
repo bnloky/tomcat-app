@@ -87,6 +87,16 @@ pipeline {
             }
         }
 
+
+
+
+
+        
+        stage("Cleanup Workspace") {
+            steps {
+              cleanWs()
+           }
+        }
         stage("Push the changed deployment file to Git") {
             steps {
                 sh """
