@@ -98,8 +98,8 @@ pipeline {
                     git config --global user.email "raj199.com@gmail.com"
                     sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
                     git add deployment.yaml
-                    git commit -m "Updated Deployment Manifest1"
-                    sh "git push https://github.com/Rojha-git/tomcat-app-cd"
+                    git commit -m "Updated Deployment Manifest"
+                    git push https://github.com/Rojha-git/tomcat-app-cd HEAD:main
                     
                 """
                  
