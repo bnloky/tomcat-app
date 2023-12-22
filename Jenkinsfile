@@ -69,17 +69,12 @@ pipeline {
             }
         }
         
-        stage("clean workspace again"){
-            steps{ 
-                cleanWs()
-            }
-        }
         
-        stage("Checkout from SCM (tomcat-app-cd)") {
+        /*stage("Checkout from SCM (tomcat-app-cd)") {
             steps {
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/Rojha-git/tomcat-app-cd'
             }
-        }
+        }*/
 
         stage("Update the Deployment Tags") {
             steps {
