@@ -92,16 +92,18 @@ pipeline {
         }
         stage("Push the changed deployment file to Git") {
             steps {
+                withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
                 sh """
                     git config --global user.name "Rojha-git"
                     git config --global user.email "raj199.com@gmail.com"
                     sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
                     git add deployment.yaml
+                    git add service.yaml
                     git commit -m "Updated Deployment Manifest1"
+                    sh "git push https://github.com/Rojha-git/tomcat-app-cd main"
                     
                 """
-                withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
-                    sh "git push https://github.com/Rojha-git/tomcat-app-cd main"
+                 
                 }
             }
         }
