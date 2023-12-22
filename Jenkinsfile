@@ -4,7 +4,7 @@ pipeline {
         maven 'Maven3'
     }
     environment {
-        APP_NAME = "tomcat-app-pipeline"
+        APP_NAME = "register-app-pipeline"
         RELEASE = "1.0.0"
         DOCKER_USER = "rajf5"
         DOCKER_PASS = 'dockerhub'
