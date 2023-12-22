@@ -68,8 +68,21 @@ pipeline {
                 }
             }
         }
-        
-        
+
+        stage('Trivy scan'){
+            steps {
+                script {
+                    sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image rajf5/register-app-pipeline:${IMAGE_TAG} --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
+                }
+            }
+        }
+        stage('Cleanup Artifact'){
+            steps { 
+                script {
+                    sh "docker rmi ${IMAGE_NAME}:${IMAGE_TAG}"
+                }
+            }
+        }
         stage("Checkout from SCM (tomcat-app-cd)") {
             steps {
                 git branch: 'main', credentialsId: 'github', url: 'https://github.com/Rojha-git/tomcat-app-cd'
