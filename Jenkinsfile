@@ -4,7 +4,7 @@ pipeline {
         maven 'Maven3'
     }
     environment {
-        APP_NAME = "register-app-pipeline"
+        APP_NAME = "tomcat-app-pipeline"
         RELEASE = "1.0.0"
         DOCKER_USER = "rajf5"
         DOCKER_PASS = 'dockerhub'
@@ -37,7 +37,7 @@ pipeline {
         }
 
         // Uncomment the following stages if SonarQube integration is needed
-        /*
+        
         stage("SonarQube Analysis") {
             steps {
                 script {
@@ -55,7 +55,7 @@ pipeline {
                 }
             }
         }
-        */
+    
 
         stage('Build and Push Docker Image') {
             steps {
@@ -72,7 +72,7 @@ pipeline {
         stage('Trivy scan'){
             steps {
                 script {
-                    sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image rajf5/register-app-pipeline:${IMAGE_TAG} --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
+                    sh ('docker run -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image rajf5/tomcat-app-pipeline:${IMAGE_TAG} --no-progress --scanners vuln  --exit-code 0 --severity HIGH,CRITICAL --format table')
                 }
             }
         }
