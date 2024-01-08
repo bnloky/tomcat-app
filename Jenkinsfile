@@ -2,7 +2,7 @@ pipeline {
     agent any
     tools {
         maven 'Maven3'
-        java 'java17'
+        jdk 'java17'
     }
     environment {
         APP_NAME = "tomcat-app-pipeline"
