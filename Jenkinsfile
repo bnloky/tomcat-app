@@ -2,13 +2,13 @@ pipeline {
     agent any
     tools {
         maven 'Maven3'
-        jdk 'java17'
+        jdk 'jdk17'
     }
     environment {
         APP_NAME = "tomcat-app-pipeline"
         RELEASE = "1.0.0"
-        DOCKER_USER = "rajf5"
-        DOCKER_PASS = 'dockerhub'
+        DOCKER_USER = "loky353"
+        DOCKER_PASS = 'Lokesh@353'
         IMAGE_NAME = "${DOCKER_USER}/${APP_NAME}"
         IMAGE_TAG = "${RELEASE}-${BUILD_NUMBER}"
     }
@@ -21,7 +21,7 @@ pipeline {
 
         stage("Checkout from SCM (tomcat-app)") {
             steps {
-                git branch: 'main', credentialsId: 'github', url: 'https://github.com/Rojha-git/tomcat-app'
+                git branch: 'main', credentialsId: 'github', url: 'https://github.com/bnloky/tomcat-app'
             }
         }
 
@@ -42,7 +42,7 @@ pipeline {
         stage("SonarQube Analysis") {
             steps {
                 script {
-                    withSonarQubeEnv(credentialsId: 'jenkins-sonarqube-token') {
+                    withSonarQubeEnv(credentialsId: 'sonar-token') {
                         sh "mvn sonar:sonar"
                     }
                 }
@@ -52,7 +52,7 @@ pipeline {
         stage("Quality Gate") {
             steps {
                 script {
-                    waitForQualityGate abortPipeline: false, credentialsId: 'jenkins-sonarqube-token'
+                    waitForQualityGate abortPipeline: false, credentialsId: 'sonar-token'
                 }
             }
         }
@@ -86,7 +86,7 @@ pipeline {
         }
         stage("Checkout from SCM (tomcat-app-cd)") {
             steps {
-                git branch: 'main', credentialsId: 'github', url: 'https://github.com/Rojha-git/tomcat-app-cd'
+                git branch: 'main', credentialsId: 'github', url: 'https://github.com/bnloky/tomcat-app-cd'
             }
         }
 
@@ -103,12 +103,12 @@ pipeline {
             steps {
                 withCredentials([gitUsernamePassword(credentialsId: 'github', gitToolName: 'Default')]) {
                 sh """
-                    git config --global user.name "Rojha-git"
-                    git config --global user.email "raj199.com@gmail.com"
+                    git config --global user.name "bnlokesh"
+                    git config --global user.email "lokeshnarasimha353@gmail.com"
                     sed -i 's/${APP_NAME}.*/${APP_NAME}:${IMAGE_TAG}/g' deployment.yaml
                     git add deployment.yaml
                     git commit -m "Updated Deployment Manifest"
-                    git push https://github.com/Rojha-git/tomcat-app-cd HEAD:main
+                    git push https://github.com/bnloky/tomcat-app-cd HEAD:main
                     
                 """
                  
@@ -123,7 +123,7 @@ pipeline {
             body: "Project: ${env.JOB_NAME}<br/>" +
                 "Build Number: ${env.BUILD_NUMBER}<br/>" +
                 "URL: ${env.BUILD_URL}<br/>",
-            to: 'raj199.com@gmail.com',                              
+            to: 'lokeshnarasimha353@gmail.com',                              
             attachmentsPattern: 'trivyfs.txt,trivyimage.txt' 
      }
 
