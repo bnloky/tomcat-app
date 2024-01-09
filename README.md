@@ -246,7 +246,7 @@ Before you begin, make sure you have the following prerequisites:
 
 14.   Refer---https://argo-cd.readthedocs.io/en/stable/cli_installation/
 
-   #ArgoCD Installation on Kubernetes Cluster and Add EKS Cluster to ArgoCD
+   .#ArgoCD Installation on Kubernetes Cluster and Add EKS Cluster to ArgoCD
    
    1 ) First, create a namespace
 
@@ -294,7 +294,7 @@ Before you begin, make sure you have the following prerequisites:
 
    11 ) Add above EKS cluster to ArgoCD with below command
    
-        argocd cluster add i-08b9d0ff0409f48e7@virtualtechbox-cluster.ap-south-1.eksctl.io --name virtualtechbox-eks-cluster
+        argocd cluster add i-08b9d0ff0409f48e7@tomcatbox-cluster.ap-south-1.eksctl.io --name virtualtechbox-eks-cluster
      
    12 ) Now if you give command "$ argocd cluster list" you will get both the clusters EKS & AgoCD(in-cluster). This can be verified at ArgoCD Dashboard.
 
@@ -349,7 +349,7 @@ Before you begin, make sure you have the following prerequisites:
 
           git config --global user.email "your-email-address"
 
-          git clone https://github.com/Rojha-git/YT-cloned-app.git
+          git clone https://github.com/Rojha-git/tomcat-app.git
 
           cd a-youtube-clone-app
 
