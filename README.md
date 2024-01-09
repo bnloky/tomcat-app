@@ -17,11 +17,12 @@
   - [8. Create Jenkins Pipeline](#8-create-jenkins-pipeline)
   - [9. SonarQube Configuration](#9-sonarqube-configuration)
   - [10. Setup Monitoring with Prometheus and Grafana](#10-setup-monitoring-with-prometheus-and-grafana)
-  - [11. Jenkins Pipeline Execution](#11-jenkins-pipeline-execution)
-  - [12. Create AWS EKS Cluster](#12-create-aws-eks-cluster)
-  - [13. Integrate Prometheus with EKS and Import Grafana Dashboard](#13-integrate-prometheus-with-eks-and-import-grafana-dashboard)
-  - [14. Automated Deployment with Jenkins on Kubernetes](#14-automated-deployment-with-jenkins-on-kubernetes)
-  - [15. Webhook Configuration](#15-webhook-configuration)
+  - [11. Integrate Gmail with Jenkins](#12-Integrate-Gmail-with-Jenkins)
+  - [12. Jenkins Pipeline Execution](#11-jenkins-pipeline-execution)
+  - [13. Create AWS EKS Cluster](#12-create-aws-eks-cluster)
+  - [14. Integrate Prometheus with EKS and Import Grafana Dashboard](#13-integrate-prometheus-with-eks-and-import-grafana-dashboard)
+  - [15. Automated Deployment with ArgoCD on Kubernetes](#14-automated-deployment-with-ArgoCD-on-kubernetes)
+  - [16. Webhook Configuration](#15-webhook-configuration)
 - [Conclusion](#conclusion)
 - [Acknowledgements](#acknowledgements)
 - [License](#license)
@@ -127,7 +128,7 @@ Before you begin, make sure you have the following prerequisites:
 9. login to sonarqube console and configure quality gate , webhook , once all these completed then after the jenkins pipeline 
     completion you will be able to see all the flow and unit tests.
 
-10. Login to prometheus using http://<ip_addr_monitoring_server>:9090   
+10. I--Login to prometheus using http://<ip_addr_monitoring_server>:9090   
     after login :
     
     --Add job for node exporter in prometheus
@@ -165,9 +166,9 @@ Before you begin, make sure you have the following prerequisites:
       curl -X POST http://localhost:9090/-/reload
 
     ```
-11. After performing the #10 point you will be able to see the targets for matrices under the traget option in prometheus console.
+    **After performing the #10 point you will be able to see the targets for matrices under the traget option in prometheus console.**
 
-12. login to grafana using http://<ip_addr_monitoring_server>:3000 --> #username and password will be "admin"
+     II.--login to grafana using http://<ip_addr_monitoring_server>:3000 --> #username and password will be "admin"
 
     --configure prometheus as the data source under the grafana using the prometheus url:
 
@@ -176,7 +177,7 @@ Before you begin, make sure you have the following prerequisites:
 
     **** Now you are able to access the monitoring console on grafana for both jenkins job and node_exporter server  ****
     
-13. configuration steps for generating gmail report --->>
+12. configuration steps for generating gmail report --->>
 
     --login to your gmail account and search for app password under : " Account >> security " and genaerte the token
 
@@ -188,11 +189,11 @@ Before you begin, make sure you have the following prerequisites:
 
       **Once you did this above configuration #13 try to test your pipeline**
 
-14. try to test your jenkins pipeline,after successfully completion it will update the tags under(https://github.com/Rojha-git/tomcat-app-cd.git) in deployment.yaml.
+13. try to test your jenkins pipeline,after successfully completion it will update the tags under(https://github.com/Rojha-git/tomcat-app-cd.git) in deployment.yaml.
 
     also it will trigeer an mail to mailid that you will provided.
 
-15. Create AWS EKS Cluster
+14. Create AWS EKS Cluster
     
     I.--Install kubectl on Jenkins Server
  
@@ -243,9 +244,9 @@ Before you begin, make sure you have the following prerequisites:
           kubectl get nodes    
 
 
-16.   Refer---https://argo-cd.readthedocs.io/en/stable/cli_installation/
+14.   Refer---https://argo-cd.readthedocs.io/en/stable/cli_installation/
 
-   [D] ArgoCD Installation on Kubernetes Cluster and Add EKS Cluster to ArgoCD
+   #ArgoCD Installation on Kubernetes Cluster and Add EKS Cluster to ArgoCD
    
    1 ) First, create a namespace
 
@@ -300,9 +301,13 @@ Before you begin, make sure you have the following prerequisites:
    
    13 ) After login to argocd click on create/Add App and provide CD repo url (https://github.com/Rojha-git/tomcat-app-cd.git) ,namespace will be default and slect the cluster by dropdown , path "./" you can provide.
 
-      **once you did all above steps you will be able to see project in argocd with all the stages of deployment**
 
-17. Integrate Prometheus with EKS and Import Grafana Monitoring Dashboard for Kubernetes
+      **once you did all above steps you will be able to see project in argocd with all the stages of deployment**
+      
+      **run "kubectl get svc" and browse dns followed by port :8080 and by :8080/webapp/ , you will be able to see our finle application that we have deployed**.
+
+
+15. Integrate Prometheus with EKS and Import Grafana Monitoring Dashboard for Kubernetes
 
     1--Install Helm
     
@@ -332,7 +337,31 @@ Before you begin, make sure you have the following prerequisites:
 
     4--login to Grafana and add above prometheus url/dns followed by :9090 in targets and create an dashboard using id #15760
 
-18. **run "kubectl get svc" and browse dns followed by port :8080 and by :8080/webapp/ , you will be able to see our finle application that we have deployed**.
+16. Now for auto trigger we can configure "webhook" so for that :
+
+    -- go to jenkins and select configure option for your pipeline , after that select "github project" and "github hook trigger" option.
+
+    -- go to github and select "setting" for your application repo and configure webhook with jenkins url "http://"ip_addr":8080/github-webhook/
+
+    -- configure git with your cli and verify auto trigger using below steps:
+
+          git config --global user.name "your.name"
+
+          git config --global user.email "your-email-address"
+
+          git clone https://github.com/Rojha-git/YT-cloned-app.git
+
+          cd a-youtube-clone-app
+
+          git add .
+
+          git commit -m "test change"
+
+          git push origin main
+
+
+
+**run "kubectl get svc" and browse dns followed by port :8080 and by :8080/webapp/ , you will be able to see our finle application that we have deployed**.
 
 **Thankyou 
   Happy Learning**      
