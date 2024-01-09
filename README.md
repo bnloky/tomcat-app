@@ -79,7 +79,7 @@ Before you begin, make sure you have the following prerequisites:
 
    ```bash
 
-   $ sudo systemctl start prometheus
+     sudo systemctl start prometheus
 
    ```
    check grafana []http://<ip_addr_monitoring_server>:3000
@@ -88,11 +88,11 @@ Before you begin, make sure you have the following prerequisites:
 
    ```bash
    
-   $ sudo systemctl status prometheus
+    sudo systemctl status prometheus
    
-   $ sudo systemctl status node_exporter
+    sudo systemctl status node_exporter
    
-   $ sudo systemctl status grafana-server
+    sudo systemctl status grafana-server
 
    ```
 
@@ -114,7 +114,9 @@ Before you begin, make sure you have the following prerequisites:
    also under the "tools" section configure jdk , maven , sonar scanner and
    under "system>>sonarqube-installation>> "configure sonar server using http://<privateip_sonar_server>:9000 console urls.
    
-   under "manage jenkins>>tools>>sonarqube installation>>" configure sonar tool with latest version . 
+   under "manage jenkins>>tools>>sonarqube installation>>" configure sonar tool with latest version .
+
+   under "manage jenkins>>tools>>" Configure Maven and jdk as tools.
 
 7. Generate the access token from sonarqube(secret_text) , github , dockerhub and configure all this under the jenkins "credentials" so that jenkins can access all these.
 
@@ -125,16 +127,16 @@ Before you begin, make sure you have the following prerequisites:
 9. login to sonarqube console and configure quality gate , webhook , once all these completed then after the jenkins pipeline 
     completion you will be able to see all the flow and unit tests.
 
-10. Login to prometheus using http://<ip_addr_monitoring_server>:9090   #username and password will be "admin"
+10. Login to prometheus using http://<ip_addr_monitoring_server>:9090   
     after login :
     
     --Add job for node exporter in prometheus
    
     ```bash
     
-    $ cd /etc/prometheus/
+     cd /etc/prometheus/
    
-    $ sudo nano prometheus.yml
+     sudo nano prometheus.yml
 
     ```
     #add job for node exporter abd jenkins
@@ -156,11 +158,11 @@ Before you begin, make sure you have the following prerequisites:
     
     #Check the indentatio of the prometheus config file with below command
     
-    $ promtool check config /etc/prometheus/prometheus.yml
+      promtool check config /etc/prometheus/prometheus.yml
 
     #Reload the Prometheus configuration
     
-    $ curl -X POST http://localhost:9090/-/reload
+      curl -X POST http://localhost:9090/-/reload
 
     ```
 11. After performing the #10 point you will be able to see the targets for matrices under the traget option in prometheus console.
@@ -169,7 +171,128 @@ Before you begin, make sure you have the following prerequisites:
 
     --configure prometheus as the data source under the grafana using the prometheus url:
 
-    --Import or add the dashboard for prometheus and jenkins by dashboard id of grafana   # you can try by google as well for dashboard id.
+    --Import or add the dashboard for prometheus and jenkins by dashboard id of grafana **(1860 -- node_exporter , 9964 --jenkins)** # you can try by google as well for dashboard id.
 
 
     **** Now you are able to access the monitoring console on grafana for both jenkins job and node_exporter server  ****
+    
+13. configuration steps for generating gmail report --->>
+
+    --login to your gmail account and search for app password under : " Account >> security " and genaerte the token
+
+    --Go to jenkins console and configure this in jenkins credential using username and password(token).
+
+    --under "Dashboard > Manage jenkins > system" configure email notification using smtp server "smtp.gmail.com" , port "465" and your gmail.
+
+    --similliarly configure extended email notification using global credential that we have configured in jenkins using the same port and server as above.
+
+      **Once you did this above configuration #13 try to test your pipeline**
+
+14. try to test your jenkins pipeline,after successfully completion it will update the tags under(https://github.com/Rojha-git/tomcat-app-cd.git) in deployment.yaml.
+
+    also it will trigeer an mail to mailid that you will provided.
+
+16. Create AWS EKS Cluster
+    
+    I.--Install kubectl on Jenkins Server
+ 
+          sudo apt update
+    
+          sudo apt install curl
+    
+          curl -LO https://dl.k8s.io/release/$(curl -L -s https://dl.k8s.io/release/stable.txt)/bin/linux/amd64/kubectl
+ 
+          sudo install -o root -g root -m 0755 kubectl /usr/local/bin/kubectl
+
+          kubectl version --client
+
+    II. --Install AWS Cli
+    
+          curl "https://awscli.amazonaws.com/awscli-exe-linux-x86_64.zip" -o "awscliv2.zip"
+
+          sudo apt install unzip
+
+          unzip awscliv2.zip
+
+          sudo ./aws/install
+
+          aws --version
+
+    III. --Installing  eksctl
+
+          curl --silent --location "https://github.com/weaveworks/eksctl/releases/latest/download/eksctl_$(uname -s)_amd64.tar.gz" | tar xz -C /tmp
+       
+          cd /tmp
+       
+          sudo mv /tmp/eksctl /bin
+
+          eksctl version
+
+    IV.--Setup Kubernetes using eksctl
+    
+          eksctl create cluster --name tomcatbox-cluster \
+    
+          --region ap-south-1 \
+    
+          --node-type t2.small \
+    
+          --nodes 3 \
+
+    V.--Verify Cluster with below command
+
+          kubectl get nodes    
+
+
+17.    Refer---https://argo-cd.readthedocs.io/en/stable/cli_installation/
+   [D] ArgoCD Installation on Kubernetes Cluster and Add EKS Cluster to ArgoCD
+   1 ) First, create a namespace
+
+       kubectl create namespace argocd
+
+   2 ) Next, let's apply the yaml configuration files for ArgoCd
+   
+       kubectl apply -n argocd -f https://raw.githubusercontent.com/argoproj/argo-cd/stable/manifests/install.yaml
+
+   3 ) Now we can view the pods created in the ArgoCD namespace.
+   
+       kubectl get pods -n argocd
+
+   4 ) To interact with the API Server we need to deploy the CLI:
+   
+       sudo curl --silent --location -o /usr/local/bin/argocd https://github.com/argoproj/argo-cd/releases/download/v2.4.7/argocd-linux-amd64
+       
+       sudo chmod +x /usr/local/bin/argocd
+      
+   5 ) Expose argocd-server
+   
+       kubectl patch svc argocd-server -n argocd -p '{"spec": {"type": "LoadBalancer"}}'
+
+   6 ) Wait about 2 minutes for the LoadBalancer creation
+    
+       kubectl get svc -n argocd
+
+   7 ) Get pasword and decode it and login to ArgoCD on Browser. Go to user info and change the password
+     
+       kubectl get secret argocd-initial-admin-secret -n argocd -o yaml
+    
+       echo WXVpLUg2LWxoWjRkSHFmSA== | base64 --decode
+
+   8 ) login to ArgoCD from CLI
+   
+       argocd login a2255bb2bb33f438d9addf8840d294c5-785887595.ap-south-1.elb.amazonaws.com --username admin,    provide the password which you set above
+
+   9 ) Check available clusters in ArgoCD
+   
+       argocd cluster list
+
+   10 ) Below command will show the EKS cluster details
+   
+        kubectl config get-contexts
+
+   11 ) Add above EKS cluster to ArgoCD with below command
+   
+        argocd cluster add i-08b9d0ff0409f48e7@virtualtechbox-cluster.ap-south-1.eksctl.io --name virtualtechbox-eks-cluster
+     
+   12 ) Now if you give command "$ argocd cluster list" you will get both the clusters EKS & AgoCD(in-cluster). This can be verified at ArgoCD Dashboard.
+
+   
