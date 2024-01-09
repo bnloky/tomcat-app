@@ -1,6 +1,6 @@
 ## Build and Deploy a tomcat based Application using Maven and ArgoCD.
 
- ![Complete CI-CD]()
+ ![Automated CI-CD](https://github.com/Rojha-git/tomcat-app/blob/main/images/dev1finle.png)
 
 
 ## Table of Contents
@@ -111,6 +111,8 @@ Before you begin, make sure you have the following prerequisites:
    
    after that you can create your userid and password.
 
+   ![jenkins-console](https://user-images.githubusercontent.com/43399466/215959008-3ebca431-1f14-4d81-9f12-6bb232bfbee3.png)
+
 5. after login to jenkins first of all click on "manage plugins" and install required plugins for **"Docker, Sonar, maven , eclipse, quality gates , prometheus"** and restart jenkins.
    also under the "tools" section configure jdk , maven , sonar scanner and
    under "system>>sonarqube-installation>> "configure sonar server using http://<privateip_sonar_server>:9000 console urls.
@@ -128,7 +130,11 @@ Before you begin, make sure you have the following prerequisites:
 9. login to sonarqube console and configure quality gate , webhook , once all these completed then after the jenkins pipeline 
     completion you will be able to see all the flow and unit tests.
 
-10. I--Login to prometheus using http://<ip_addr_monitoring_server>:9090   
+   ![sonar-project-overview](https://github.com/Rojha-git/tomcat-app/blob/main/images/sonar1.png)
+   ![sonar-to-check-the-code-issue](https://github.com/Rojha-git/tomcat-app/blob/main/images/sonar2.png)
+   ![sonar-overview](https://github.com/Rojha-git/tomcat-app/blob/main/images/sonar3.png)
+
+11. I--Login to prometheus using http://<ip_addr_monitoring_server>:9090   
     after login :
     
     --Add job for node exporter in prometheus
@@ -193,7 +199,9 @@ Before you begin, make sure you have the following prerequisites:
 
     also it will trigeer an mail to mailid that you will provided.
 
-14. Create AWS EKS Cluster
+    ![Jenkins-pipeline-status](https://github.com/Rojha-git/tomcat-app/blob/main/images/jenkins.png)
+
+15. Create AWS EKS Cluster
     
     I.--Install kubectl on Jenkins Server
  
@@ -301,10 +309,14 @@ Before you begin, make sure you have the following prerequisites:
    
    13 ) After login to argocd click on create/Add App and provide CD repo url (https://github.com/Rojha-git/tomcat-app-cd.git) ,namespace will be default and slect the cluster by dropdown , path "./" you can provide.
 
+   ![argoCD-App](https://github.com/Rojha-git/tomcat-app/blob/main/images/argo1.png)
 
-      **once you did all above steps you will be able to see project in argocd with all the stages of deployment**
+   ![argoCD-Overview](https://github.com/Rojha-git/tomcat-app/blob/main/images/argo2.png)
+
+
+     **once you did all above steps you will be able to see project in argocd with all the stages of deployment**
       
-      **run "kubectl get svc" and browse dns followed by port :8080 and by :8080/webapp/ , you will be able to see our finle application that we have deployed**.
+     **run "kubectl get svc" and browse dns followed by port :8080 and by :8080/webapp/ , you will be able to see our finle application that we have deployed**.
 
 
 15. Integrate Prometheus with EKS and Import Grafana Monitoring Dashboard for Kubernetes
@@ -360,8 +372,11 @@ Before you begin, make sure you have the following prerequisites:
           git push origin main
 
 
+![Final-app](https://github.com/Rojha-git/tomcat-app/blob/main/images/tomcat-application.png)
 
 **run "kubectl get svc" and browse dns followed by port :8080 and by :8080/webapp/ , you will be able to see our finle application that we have deployed**.
+
+![Reg-App](
 
 **Thankyou 
   Happy Learning**      
