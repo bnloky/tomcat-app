@@ -192,7 +192,7 @@ Before you begin, make sure you have the following prerequisites:
 
     also it will trigeer an mail to mailid that you will provided.
 
-16. Create AWS EKS Cluster
+15. Create AWS EKS Cluster
     
     I.--Install kubectl on Jenkins Server
  
@@ -243,8 +243,10 @@ Before you begin, make sure you have the following prerequisites:
           kubectl get nodes    
 
 
-17.    Refer---https://argo-cd.readthedocs.io/en/stable/cli_installation/
+16.   Refer---https://argo-cd.readthedocs.io/en/stable/cli_installation/
+
    [D] ArgoCD Installation on Kubernetes Cluster and Add EKS Cluster to ArgoCD
+   
    1 ) First, create a namespace
 
        kubectl create namespace argocd
@@ -271,11 +273,11 @@ Before you begin, make sure you have the following prerequisites:
     
        kubectl get svc -n argocd
 
-   7 ) Get pasword and decode it and login to ArgoCD on Browser. Go to user info and change the password
+   7 ) Get pasword and decode it and login to ArgoCD "using LB url by above command" on Browser. Go to user info and change the password
      
-       kubectl get secret argocd-initial-admin-secret -n argocd -o yaml
+       kubectl get secret argocd-initial-admin-secret -n argocd -o yaml     #Copy password from here
     
-       echo WXVpLUg2LWxoWjRkSHFmSA== | base64 --decode
+       echo WXVpLUg2LWxoWjRkSHFmSA== | base64 --decode        #decode the password and login argocd username will be admin.
 
    8 ) login to ArgoCD from CLI
    
@@ -296,3 +298,42 @@ Before you begin, make sure you have the following prerequisites:
    12 ) Now if you give command "$ argocd cluster list" you will get both the clusters EKS & AgoCD(in-cluster). This can be verified at ArgoCD Dashboard.
 
    
+   13 ) After login to argocd click on create/Add App and provide CD repo url (https://github.com/Rojha-git/tomcat-app-cd.git) ,namespace will be default and slect the cluster by dropdown , path "./" you can provide.
+
+      **once you did all above steps you will be able to see project in argocd with all the stages of deployment**
+
+17. [D] Integrate Prometheus with EKS and Import Grafana Monitoring Dashboard for Kubernetes
+
+    1--Install Helm
+    
+       sudo snap install helm --classic
+       helm version
+
+    2--Install Prometheus on EKS
+    
+       helm repo add stable https://charts.helm.sh/stable          ///We need to add the Helm Stable Charts for our local client
+
+       helm repo add prometheus-community https://prometheus-community.github.io/helm-charts     ///Add Prometheus Helm repo
+
+       kubectl create namespace prometheus            ///Create Prometheus namespace
+
+       helm install stable prometheus-community/kube-prometheus-stack -n prometheus      ///Install Prometheus
+
+       kubectl get pods -n prometheus          ///To check whether Prometheus is installed
+
+       kubectl get svc -n prometheus           ///to check the services file (svc) of the Prometheus
+
+
+    3--let’s expose Prometheus to the external world using LoadBalancer
+    
+       kubectl edit svc stable-kube-prometheus-sta-prometheus -n prometheus    ///type:LoadBalancer, change port & targetport to 9090, save and close
+
+       kubectl get svc -n prometheus    //copy dns name of LB and browse with 9090 you will be able to see all the targets
+
+    4--login to Grafana and add above prometheus url/dns followed by :9090 in targets and create an dashboard using id #15760
+
+18. **run "kubectl get svc" and browse dns followed by port :8080 and by :8080/webapp/ , you will be able to see our finle application that we have deployed**.
+
+**Thankyou 
+  Happy Learning**      
+             
